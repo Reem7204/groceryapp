@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:groceryapp/Home.dart';
+import 'package:groceryapp/bottomnotification.dart';
 import 'package:groceryapp/forgotpassword.dart';
 import 'package:groceryapp/signup.dart';
 import 'package:groceryapp/toast_meaasage.dart';
@@ -33,7 +34,7 @@ class _LoginpageState extends State<Loginpage> {
       final UserCredential userCredential= await auth.signInWithCredential(credential);
       final User? user= userCredential.user;
       if (user!=null) {
-        Navigator.push(context, MaterialPageRoute(builder: (_)=>Home()));
+        Navigator.push(context, MaterialPageRoute(builder: (_)=>Bottomnotification()));
         ToastMessage().toastmessage(message: 'succusfully completed');
       }
     } catch (e) {

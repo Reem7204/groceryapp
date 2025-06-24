@@ -5,6 +5,7 @@ import 'package:groceryapp/Home.dart';
 import 'package:groceryapp/firebase_msg.dart';
 import 'package:groceryapp/firebase_options.dart';
 import 'package:groceryapp/loginpage.dart';
+import 'package:groceryapp/splashscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ✅ Ensures all bindings are set
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
           // tested with just a hot reload.
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: const Loginpage(),
+        home: const Splashscreen(),
       ),
     );
   }
