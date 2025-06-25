@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:groceryapp/description.dart';
+import 'package:groceryapp/loginpage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,6 +21,25 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         // leading: GestureDetector(onTap: () => Navigator.pop(context),child: Icon(Icons.arrow_back_ios_new)),
         title: Center(child: Text('Home')),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert),
+              onSelected: (String result) {
+                if (result == 'logout') {
+                   FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>Loginpage()));
+                }
+              },
+              itemBuilder: (BuildContext context) => 
+                          <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'logout',
+                              child: Text('Log Out'))
+                          ],),
+          )
+        ],
       ),
       body: Column(
         children: [

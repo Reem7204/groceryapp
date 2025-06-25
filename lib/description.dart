@@ -34,7 +34,10 @@ class _DescriptionState extends State<Description> {
   }
   void _decrementValue(){
     setState(() {
-      value--;
+      if (value > 0) {
+        value--;
+      }
+      
     });
   }
   @override
