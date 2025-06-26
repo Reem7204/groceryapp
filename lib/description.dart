@@ -8,8 +8,9 @@ class Description extends StatefulWidget {
   final String item;
   final String itemImage;
   final String description;
-  final String quantity;
-  final String price;
+  final int quantity;
+  final double price;
+  final String unit;
 
   const Description({
     super.key,
@@ -18,6 +19,7 @@ class Description extends StatefulWidget {
     required this.description,
     required this.quantity,
     required this.price,
+    required this.unit
   });
 
   @override
@@ -25,17 +27,34 @@ class Description extends StatefulWidget {
 }
 
 class _DescriptionState extends State<Description> {
+   
+  late double totalPrice;
+  late int totalQuantity;
+   @override
+  void initState() {
+    super.initState();
+    totalPrice = widget.price;
+    totalQuantity = widget.quantity;
+  }
   int value = 1;
   final ref = FirebaseFirestore.instance.collection('CartDb');
+
+  
+
   void _incrementValue(){
     setState(() {
+      
       value++;
+      totalPrice = widget.price * value;
+      totalQuantity = widget.quantity * value;
     });
   }
   void _decrementValue(){
     setState(() {
       if (value > 0) {
         value--;
+        totalPrice = widget.price * value;
+        totalQuantity = widget.quantity * value;
       }
       
     });
@@ -81,7 +100,7 @@ class _DescriptionState extends State<Description> {
             ),
             SizedBox(height: 10.h),
             Text(
-              widget.quantity,
+              '$totalQuantity ${widget.unit}',
               style: TextStyle(
                 color: const Color(0xFF7C7C7C),
                 fontSize: 16.sp,
@@ -108,7 +127,7 @@ class _DescriptionState extends State<Description> {
                                 width: 1,
                                 color: const Color(0xFFE2E2E2),
                               ),
-                              borderRadius: BorderRadius.circular(17),
+                              borderRadius: BorderRadius.circular(17.r),
                             ),
                           ),
                           child: Center(
@@ -134,7 +153,7 @@ class _DescriptionState extends State<Description> {
                               width: 1,
                               color: const Color(0xFFE2E2E2),
                             ),
-                            borderRadius: BorderRadius.circular(17),
+                            borderRadius: BorderRadius.circular(17.r),
                           ),
                         ),
                         child: Center(
@@ -161,7 +180,7 @@ class _DescriptionState extends State<Description> {
                                 width: 1,
                                 color: const Color(0xFFE2E2E2),
                               ),
-                              borderRadius: BorderRadius.circular(17),
+                              borderRadius: BorderRadius.circular(17.r),
                             ),
                           ),
                           child: Center(
@@ -181,7 +200,7 @@ class _DescriptionState extends State<Description> {
                     ],
                   ),
                   Text(
-                    widget.price,
+                    '\$${totalPrice.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: const Color(0xFF181725),
                       fontSize: 24.sp,
@@ -231,8 +250,9 @@ class _DescriptionState extends State<Description> {
                   'id':id,
                   'item':widget.item,
                   'itemImage':widget.itemImage,
-                  'price':widget.price,
-                  'quantity':widget.quantity,
+                  'price': totalPrice,
+                  'quantity': totalQuantity,
+                  'unit':widget.unit,
                   'value':value
                 });
               },

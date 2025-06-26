@@ -12,8 +12,19 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   Map<String, int> cartValues = {};
+  Map<String, double> cartPrice = {};
+  Map<String, int> cartQuantity = {};
+  Map<String, double> basePrice = {};
+  Map<String, int> baseQuantity = {};
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final firestore = FirebaseFirestore.instance.collection('CartDb').snapshots();
   final ref = FirebaseFirestore.instance.collection('CartDb');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +55,14 @@ class _CartState extends State<Cart> {
 
                         if (!cartValues.containsKey(docId)) {
                           cartValues[docId] = doc['value'];
+                        }
+                        if (!cartPrice.containsKey(docId)) {
+                          cartPrice[docId] = doc['price'];
+                          basePrice[docId] = doc['price'] / doc['value'];
+                        }
+                        if (!cartQuantity.containsKey(docId)) {
+                          cartQuantity[docId] = doc['quantity'];
+                          baseQuantity[docId] = (doc['quantity'] / doc['value']).round();
                         }
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -98,7 +117,7 @@ class _CartState extends State<Cart> {
                                           },
                                           child: Icon(Icons.delete),
                                         ),
-                                        SizedBox(width: 20.w),
+                                        SizedBox(width: 10.w),
                                         GestureDetector(
                                           onTap: () {
                                             ref
@@ -110,6 +129,8 @@ class _CartState extends State<Cart> {
                                                 )
                                                 .update({
                                                   'value': cartValues[docId],
+                                                  'quantity': cartQuantity[docId],
+                                                  'price': cartPrice[docId]
                                                 })
                                                 .then((value) {
                                                   ToastMessage().toastmessage(
@@ -129,8 +150,7 @@ class _CartState extends State<Cart> {
                                       ],
                                     ),
                                     Text(
-                                      snapshot.data!.docs[index]['quantity']
-                                          .toString(),
+                                      '${cartQuantity[docId]} ${snapshot.data!.docs[index]['unit']}',
                                       style: TextStyle(
                                         color: const Color(0xFF7C7C7C),
                                         fontSize: 14.sp,
@@ -150,9 +170,9 @@ class _CartState extends State<Cart> {
                                                   () => setState(() {
                                                     if (cartValues[docId]! >
                                                         1) {
-                                                      cartValues[docId] =
-                                                          cartValues[docId]! -
-                                                          1;
+                                                      cartValues[docId] = cartValues[docId]! - 1;
+                                                      cartPrice[docId] = basePrice[docId]! * cartValues[docId]!;
+                                                      cartQuantity[docId] = baseQuantity[docId]! * cartValues[docId]!;
                                                     }
                                                   }),
                                               child: Container(
@@ -225,6 +245,8 @@ class _CartState extends State<Cart> {
                                                       cartValues[docId] =
                                                           cartValues[docId]! +
                                                           1;
+                                                      cartPrice[docId] = basePrice[docId]! * cartValues[docId]!;
+                                                      cartQuantity[docId] = baseQuantity[docId]! * cartValues[docId]!;
                                                     }
                                                   }),
                                               child: Container(
@@ -261,10 +283,9 @@ class _CartState extends State<Cart> {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(width: 70.w),
+                                        SizedBox(width: 60.w),
                                         Text(
-                                          snapshot.data!.docs[index]['price']
-                                              .toString(),
+                                          '\$${cartPrice[docId]}',
                                           style: TextStyle(
                                             color: const Color(0xFF181725),
                                             fontSize: 18.sp,

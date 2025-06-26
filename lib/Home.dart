@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
                   return Center(child: Text('error'));
                 }
                 if (snapshot.hasData) {
+                 
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -67,12 +68,13 @@ class _HomeState extends State<Home> {
                     ),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
+                       print(snapshot.data!.docs[index]['quantity'].runtimeType);
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Description(item: snapshot.data!.docs[index]['item'], itemImage: snapshot.data!.docs[index]['itemImage'], description: snapshot.data!.docs[index]['description'], quantity: snapshot.data!.docs[index]['quantity'], price: snapshot.data!.docs[index]['price'],),
+                              builder: (context) => Description(item: snapshot.data!.docs[index]['item'], itemImage: snapshot.data!.docs[index]['itemImage'], description: snapshot.data!.docs[index]['description'], quantity: snapshot.data!.docs[index]['quantity'].toInt(),unit: snapshot.data!.docs[index]['unit'], price: snapshot.data!.docs[index]['price'].toDouble()),
                             ),
                           );
                         },
@@ -133,8 +135,7 @@ class _HomeState extends State<Home> {
                                 Row(
                                   children: [
                                     Text(
-                                      snapshot.data!.docs[index]['quantity']
-                                          .toString(),
+                                      '${snapshot.data!.docs[index]['quantity']} ${snapshot.data!.docs[index]['unit']}',
                                       style: TextStyle(
                                         color: const Color(0xFF7C7C7C),
                                         fontSize: 14,
@@ -150,8 +151,7 @@ class _HomeState extends State<Home> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      snapshot.data!.docs[index]['price']
-                                          .toString(),
+                                      '\$${snapshot.data!.docs[index]['price']}',
                                       style: TextStyle(
                                         color: const Color(0xFF181725),
                                         fontSize: 18,
